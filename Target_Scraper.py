@@ -36,7 +36,7 @@ Vanilla Ice Cream (1.5 qt)
 
 from bs4 import BeautifulSoup
 import requests
-
+#list of all the urls that correspond to the list of staple foods
 def Target_Scrapper():
     url_list = ["https://www.target.com/p/vitamin-d-whole-milk-1gal-good-38-gather-8482/-/A-13276134#lnk=sametab",
                 "https://www.target.com/p/grade-a-large-eggs-12ct-good-38-gather-8482-packaging-may-vary/-/A-14713534#lnk=sametab",
@@ -71,28 +71,45 @@ def Target_Scrapper():
                 "https://www.target.com/p/lightly-salted-dry-roasted-peanuts-16oz-good-38-gather-8482/-/A-78100370#lnk=sametab",
                 "https://www.target.com/p/vanilla-bean-ice-cream-1-5qt-favorite-day-8482/-/A-81504855#lnk=sametab"]
 
+    #list of lists of a string of the staple food name and their corresponding price that will be updated below
     staple_food = [["Milk", 0], ["Eggs", 0], ["Bread", 0], ["Butter", 0], ["Ketchup", 0], ["Mustard", 0], ["Mayo", 0], ["Apples", 0], ["Corn", 0], ["Bananas", 0], ["Cream Cheese", 0], ["Peanut Butter", 0], ["Pinto Beans", 0],
                    ["Black Beans", 0], ["White rice", 0], ["Marinara Sauce", 0], ["Spaghetti", 0], ["Chicken Breasts", 0], ["Ground Beef", 0], ["Bacon", 0], ["Baking powder", 0], ["Baking soda", 0], ["Vanilla extract", 0],
                    ["Sugar", 0], ["Flour", 0], ["Olive oil", 0], ["Salt", 0], ["Pepper", 0], ["Oats", 0], ["Tomatoes", 0], ["Peanuts", 0], ["Vanilla ice cream", 0]]
-
+    #this will be used to index the staple food list
     count = 0
+    #iterate through the url list
     for j in url_list:
+        #will be added to requests so that the web page believes that the scraper is not a robot
         headers = {"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36"}
+        #scrapers the information of the webpage
         html = requests.get(j, headers=headers)
+        #uses beautiful soul to parse the web page data
         soup = BeautifulSoup(html.text, "html.parser")
+        #the body is where the current price is
         child_soup = soup.find('body')
+        #because the body is made up of multiple parts, to find the current price you need to iterate through it
         for i in child_soup:
+            #the very first part of the body for each iteration is None, so there is a check for that here
             if i.string != None:
+                #check to see if it finds the dollar sign in the string
                 if i.string.find("$", 30000) != -1:
+                    #if it found the dollar sign, then get its index of the string that it is in
                     index = i.string.find("$", 30000)
+                    #temporary variable to store the price 
                     word = ""
+                    #get the first character in the string
                     character = i.string[index]
+                    #update index
                     index += 1
+                    #iterate through the string until it hits a backlash, adding all the characters to word
                     while character != "\\":
                         word += i.string[index]
                         index += 1
                         character = i.string[index]
+                    #once the price is in word, place it into the correct spot in staple list
                     staple_food[count][1] = word
+                    #update count
                     count += 1
+    #once staple food list is updated with the correct data, return it
     return staple_food
 

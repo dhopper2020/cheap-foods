@@ -47,9 +47,8 @@ def Target_Scrapper():
         child_soup = soup.find('body')
         for i in child_soup:
             if i.string != None:
-                index1 = i.string.find("$")
-                if i.string.find("$", 26000, 38000) != -1:
-                    index = i.string.find("$", 31000, 38000)
+                if i.string.find("$", 30000) != -1:
+                    index = i.string.find("$", 30000)
                     word = ""
                     character = i.string[index]
                     index += 1
@@ -59,7 +58,6 @@ def Target_Scrapper():
                         character = i.string[index]
                     staple_food[count][1] = word
                     count += 1
-
     return staple_food
 
 """
